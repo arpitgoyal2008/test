@@ -6,14 +6,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,7 +29,11 @@ public class TouchView extends View {
     private Path mPath;
     private Context mContext;
 
-
+    /**
+     * Constructor for touch view
+     * @param context
+     * @param attrs
+     */
     public TouchView(Context context, AttributeSet attrs) {
         super(context);
 
@@ -57,20 +59,20 @@ public class TouchView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         TouchInformation temp = new TouchInformation();
-        temp.xCoord = event.getX();
-        temp.yCoord = event.getY();
-        temp.pressure = event.getPressure();
-        temp.eventTime = event.getEventTime();
-        temp.size = event.getSize();
+        temp.xCoord = event.getX();   // x-coordinate
+        temp.yCoord = event.getY();   //y-coordinate
+        temp.pressure = event.getPressure();  //pressure
+        temp.eventTime = event.getEventTime();  //size
+        temp.size = event.getSize();  //event time
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                Vars.touchInformationList.clear();
+                Vars.touchInformationList.clear();      //singleton object to hold touch information is cleared when user first puts his finger
                 mPath.moveTo(temp.xCoord, temp.yCoord);
-                Vars.touchInformationList.add(temp);
+                Vars.touchInformationList.add(temp);     //add current touchpoint to the list
                 return true;
             case MotionEvent.ACTION_MOVE:
-                mPath.lineTo(temp.xCoord, temp.yCoord);
+                mPath.lineTo(temp.xCoord, temp.yCoord);  //draw a line to the point
                 Vars.touchInformationList.add(temp);
                 break;
             case MotionEvent.ACTION_UP:
@@ -79,10 +81,13 @@ public class TouchView extends View {
             default:
                 return false;
         }
-        invalidate();
+        invalidate();     //refreshing the view
         return true;
     }
 
+    /**
+     * This function is called when user has lifted his finger
+     */
     public void fingerRemoved() {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
